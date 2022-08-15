@@ -1,4 +1,4 @@
-const handler = () => {
+const handler = (_, res) => {
   const descriptions = [
     { id: 0, item: "Each time you will be given 10 questions on a random topic." },
     { id: 1, item: "You can move on to the next question if you have selected an answer." },
