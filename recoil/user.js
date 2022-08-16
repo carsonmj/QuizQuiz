@@ -8,11 +8,3 @@ export const userState = atom({
     time: `0'00"`,
   },
 });
-
-export const timeState = atom({
-  key: "timeState",
-  default: {
-    start: null,
-    end: null,
-  },
-});
