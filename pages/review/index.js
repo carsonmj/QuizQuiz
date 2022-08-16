@@ -52,32 +52,36 @@ const Review = () => {
 
   return (
     <>
-      <ReviewHeader
-        onClick={handleMypageButtonClick}
-        current={currentIndex + 1}
-        total={wonrgAnswerdQuestions.length}
-      />
-      <QuestionController
-        onClickPrev={handlePrevButtonClick}
-        onClickNext={handleNextButtonClick}
-        disable={false}
-        index={currentIndex}
-      />
-      <QuestionContainer
-        question={decode(questions[wonrgAnswerdQuestions[currentIndex]].question)}
-      />
-      <OptionsContainer>
-        {questions[wonrgAnswerdQuestions[currentIndex]].options.map((option, index) => {
-          return (
-            <Option
-              key={index}
-              content={decode(option)}
-              state={getOptionState(option)}
-              canClick={false}
-            />
-          );
-        })}
-      </OptionsContainer>
+      {wonrgAnswerdQuestions.length > 0 && (
+        <>
+          <ReviewHeader
+            onClick={handleMypageButtonClick}
+            current={currentIndex + 1}
+            total={wonrgAnswerdQuestions.length}
+          />
+          <QuestionController
+            onClickPrev={handlePrevButtonClick}
+            onClickNext={handleNextButtonClick}
+            disable={false}
+            index={currentIndex}
+          />
+          <QuestionContainer
+            question={decode(questions[wonrgAnswerdQuestions[currentIndex]].question)}
+          />
+          <OptionsContainer>
+            {questions[wonrgAnswerdQuestions[currentIndex]].options.map((option, index) => {
+              return (
+                <Option
+                  key={index}
+                  content={decode(option)}
+                  state={getOptionState(option)}
+                  canClick={false}
+                />
+              );
+            })}
+          </OptionsContainer>
+        </>
+      )}
     </>
   );
 };
