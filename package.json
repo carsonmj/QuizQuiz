@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cypress": "cypress open",
+    "cypress:run": "cypress run"
   },
   "dependencies": {
     "html-entities": "^2.3.3",
@@ -18,7 +20,9 @@
     "recoil": "^0.7.5"
   },
   "devDependencies": {
+    "@cypress/code-coverage": "^3.10.0",
     "autoprefixer": "^10.4.8",
+    "cypress": "^10.5.0",
     "eslint": "8.22.0",
     "eslint-config-next": "12.2.5",
     "postcss": "^8.4.16",
