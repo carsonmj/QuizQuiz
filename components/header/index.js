@@ -1,13 +1,14 @@
 import HomeButton from "../button/HomeButton";
 import Timer from "../timer";
 
-const Header = ({ onClickHome }) => {
+const Header = ({ onClickHome, isDone }) => {
+
   return (
-    <header className="flex flex-row justify-between mt-6 px-4">
+    <header className="flex flex-row justify-between mt-6 mb-8 px-4">
       <HomeButton onClick={onClickHome}>
         home
       </HomeButton>
-      <Timer />
+      <Timer isDone={isDone} />
     </header>
   );
 };
