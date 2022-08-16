@@ -16,7 +16,21 @@ if (process.env.NODE_ENV === "development") {
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  staticPageGenerationTimeout: 600000,
+  staticPageGenerationTimeout: 10000,
+  async redirects() {
+    return [
+      {
+        source: '/review',
+        destination: '/',
+        permanent: false,
+      },
+      {
+        source: '/quiz',
+        destination: '/',
+        permanent: false,
+      },
+    ]
+  },
 };
 
 module.exports = nextConfig;
