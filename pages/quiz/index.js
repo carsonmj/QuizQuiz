@@ -17,7 +17,7 @@ const Quiz = () => {
   const questions = useRecoilValue(questionsState);
   const [progressIndex, setProgressIndex] = useRecoilState(progressState);
   const [userResult, setUserResult] = useRecoilState(userState);
-  const [currentIndex, setCurrenctIndex] = useState(8);
+  const [currentIndex, setCurrenctIndex] = useState(0);
   const [userAnswer, setUserAnswer] = useState("");
   const correctAnswer = questions.results[currentIndex].correct_answer;
 
@@ -47,7 +47,6 @@ const Quiz = () => {
 
   const handleNextButtonClick = () => {
     if (questions.results.length - 1 === currentIndex) {
-      // move to result page
       router.push("/result");
       return;
     }
