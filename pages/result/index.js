@@ -21,7 +21,11 @@ const Result = () => {
 
   const handleReviewButtonClick = () => {
     resetProgressIndex();
-    router.push("/review");
+    if (Object.keys(userResult.wrong).length > 0) {
+      router.push("/review");
+    } else {
+      router.push("/");
+    }
   };
 
   const handleResetButtonClick = () => {
