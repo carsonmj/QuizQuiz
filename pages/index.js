@@ -3,7 +3,7 @@ import { useCallback, useEffect } from "react";
 import { useRecoilState, useRecoilRefresher_UNSTABLE, useResetRecoilState } from "recoil";
 
 import MainButton from "../components/button/MainButton";
-import { updateState, questionsState } from "../recoil/question";
+import { updateState, questionsState, progressState } from "../recoil/question";
 import { userState } from "../recoil/user";
 
 const Home = ({ descriptions }) => {
@@ -11,12 +11,18 @@ const Home = ({ descriptions }) => {
   const [shouldUpdateQuestion, setShouldUpdateQuestion] = useRecoilState(updateState);
   const refreshQuestion = useRecoilRefresher_UNSTABLE(questionsState);
   const resetUserState = useResetRecoilState(userState);
+  const resetProgressState = useResetRecoilState(progressState);
 
   const handleStartButtonClick = useCallback(() => {
     router.push("/quiz");
     resetUserState();
     setShouldUpdateQuestion(false);
   });
+
+  useEffect(() => {
+    resetProgressState();
+  });
+
   useEffect(() => {
     if (shouldUpdateQuestion) {
       refreshQuestion();
@@ -25,7 +31,7 @@ const Home = ({ descriptions }) => {
 
   return (
     <div className="w-screen h-screen flex flex-col items-center justify-center overflow-hidden bg-white">
-      <p className="mb-14 text-7xl text-[#00c896]">QUIZ QUIZ</p>
+      <h2 className="mb-14 text-7xl text-[#00c896]">QUIZ QUIZ</h2>
       <MainButton onClick={handleStartButtonClick}>
         <p className="text-2xl">
           Start
@@ -45,16 +51,11 @@ export const getStaticProps = async () => {
 
   try {
     if (process.env.NODE_ENV === "development") {
-      const res = await fetch("http://localhost:3000/api/description");
+      const res = await fetch(process.env.LOCAL_URL);
       descriptions = await res.json();
     } else {
-      descriptions = [
-        { id: 0, item: "Each time you will be given 10 questions on a random topic." },
-        { id: 1, item: "You can move on to the next question if you have selected an answer." },
-        { id: 2, item: "You can choose the answer to the question from among 4 options." },
-        { id: 3, item: "When you have completed all the questions, you can check the statistics of the questions." },
-        { id: 4, item: "You can solve the question again or check the review notes." },
-      ];
+      const res = await fetch(process.env.PRODUCTION_URL);
+      descriptions = await res.json();
     }
   } catch (error) {
     return { props: { code: 500, result: [] } };
