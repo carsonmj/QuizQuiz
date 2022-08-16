@@ -1,5 +1,5 @@
 {
-  "name": "classting",
+  "name": "quiz-quiz",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,9 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "html-entities": "^2.3.3",
+    "intercept-stdout": "^0.1.2",
     "next": "12.2.5",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-icons": "^4.4.0",
+    "recoil": "^0.7.5"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.8",
