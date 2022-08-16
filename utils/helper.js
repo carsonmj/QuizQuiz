@@ -38,3 +38,29 @@ export const reOrganizeQuestions = (questions) => {
 
   return questions;
 };
+
+export const getOptionState = ({ content, progressIndex, currentIndex, correctAnswer, userAnswer, userResult }) => {
+  if (progressIndex > currentIndex) {
+    if (correctAnswer === content) {
+      return "correct";
+    }
+
+    if (userResult.wrong?.[currentIndex]) {
+      return userResult.wrong[currentIndex] === content ? "wrong" : "default";
+    }
+  } else {
+    if (!userAnswer) {
+      return "default";
+    }
+
+    if (userAnswer && content === correctAnswer) {
+      return "correct";
+    }
+
+    if (userAnswer === content) {
+      return "wrong";
+    }
+  }
+
+  return "default";
+};
