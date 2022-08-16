@@ -1,13 +1,31 @@
 import { useRouter } from "next/router";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
+import { useRecoilState, useRecoilRefresher_UNSTABLE, useResetRecoilState } from "recoil";
 
-import MainButton from "../components/MainButton";
+import MainButton from "../components/button/MainButton";
+import { updateState, questionsState } from "../recoil/question";
+import { userState } from "../recoil/user";
 
 const Home = ({ descriptions }) => {
   const router = useRouter();
+  const [shouldUpdateQuestion, setShouldUpdateQuestion] = useRecoilState(updateState);
+  const refreshQuestion = useRecoilRefresher_UNSTABLE(questionsState);
+  const resetUserState = useResetRecoilState(userState);
+
   const handleStartButtonClick = useCallback(() => {
     router.push("/quiz");
+    resetUserState();
+    setShouldUpdateQuestion(false);
   });
+
+  console.log("shouldUpdateQuestion ===>", shouldUpdateQuestion);
+
+  useEffect(() => {
+    if (shouldUpdateQuestion) {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      refreshQuestion();
+    }
+  }, [shouldUpdateQuestion]);
 
   return (
     <div className="w-screen h-screen flex flex-col items-center justify-center overflow-hidden bg-white">
@@ -29,9 +47,13 @@ const Home = ({ descriptions }) => {
 export const getStaticProps = async () => {
   let descriptions;
 
-  if (process.env.NODE_ENV === "development") {
-    const res = await fetch("http://localhost:3000/api/description");
-    descriptions = await res.json();
+  try {
+    if (process.env.NODE_ENV === "development") {
+      const res = await fetch("http://localhost:3000/api/description");
+      descriptions = await res.json();
+    }
+  } catch (error) {
+    return { props: { code: 500, result: [] } };
   }
 
   return {
