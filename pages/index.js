@@ -17,12 +17,8 @@ const Home = ({ descriptions }) => {
     resetUserState();
     setShouldUpdateQuestion(false);
   });
-
-  console.log("shouldUpdateQuestion ===>", shouldUpdateQuestion);
-
   useEffect(() => {
     if (shouldUpdateQuestion) {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
       refreshQuestion();
     }
   }, [shouldUpdateQuestion]);
