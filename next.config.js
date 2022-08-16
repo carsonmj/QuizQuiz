@@ -16,6 +16,7 @@ if (process.env.NODE_ENV === "development") {
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  staticPageGenerationTimeout: 600000,
 };
 
 module.exports = nextConfig;
