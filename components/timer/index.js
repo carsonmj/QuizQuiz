@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { MdTimer } from 'react-icons/md';
-import { useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 
 import useInterval from "../../hooks/useInterval";
 import { userState } from "../../recoil/user";
 
 const Timer = ({ isDone }) => {
-  const setTimeRecord = useSetRecoilState(userState);
+  const [userResult, setUserResult] = useRecoilState(userState);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
 
@@ -22,13 +22,12 @@ const Timer = ({ isDone }) => {
   useEffect(() => {
     if (isDone) {
       stop();
-      setTimeRecord({
-        ...userState, time: `${minutes > 9 ? minutes : "0".concat(minutes)}'${seconds > 9 ? seconds : "0".concat(seconds)}`,
+      setUserResult({
+        ...userResult,
+        time: `${minutes > 9 ? minutes : "0".concat(minutes)}'${seconds > 9 ? seconds : "0".concat(seconds)}`,
       });
     }
   }, [isDone]);
-
-
 
   return (
     <div className="flex flex-row items-center text-[#666]">
