@@ -1,4 +1,4 @@
-import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
+import { MdArrowBackIos, MdArrowForwardIos } from "react-icons/md";
 
 const QuestionController = ({ onClickPrev, onClickNext, disable, index }) => {
   return (

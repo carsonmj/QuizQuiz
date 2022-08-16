@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { MdTimer } from 'react-icons/md';
+import { MdTimer } from "react-icons/md";
 import { useRecoilState } from "recoil";
 
 import useInterval from "../../hooks/useInterval";
