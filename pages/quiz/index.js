@@ -143,10 +143,4 @@ const Quiz = () => {
   );
 };
 
-export const getServerSideProps = async () => {
-  return {
-    props: {},
-  };
-};
-
 export default Quiz;
