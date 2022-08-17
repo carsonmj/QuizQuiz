@@ -1,9 +1,11 @@
-import { useRouter } from "next/router";
-import { useCallback, useState } from "react";
+import Router, { useRouter } from "next/router";
+import { useCallback, useEffect, useState } from "react";
 import { useRecoilValue, useRecoilState } from "recoil";
 import { decode } from "html-entities";
 
+import HeadMeta from "../../components/HeadMeta";
 import Header from "../../components/header";
+import Spinner from "../../components/loading/Spinner";
 import Option from "../../components/quiz/Option";
 import OptionsContainer from "../../components/quiz/OptionsContainer";
 import QuestionController from "../../components/button/QuestionController";
@@ -19,6 +21,7 @@ const Quiz = () => {
   const [userResult, setUserResult] = useRecoilState(userState);
   const [currentIndex, setCurrenctIndex] = useState(0);
   const [userAnswer, setUserAnswer] = useState("");
+  const [loading, setLoading] = useState(false);
   const correctAnswer = questions.results[currentIndex].correct_answer;
 
   const init = () => {
@@ -57,7 +60,7 @@ const Quiz = () => {
   };
 
   const handleOptionClick = (e) => {
-    const answer = e.target.innerText;
+    const answer = e.target.textContent;
     setUserAnswer(answer);
 
     if (correctAnswer !== answer) {
@@ -73,8 +76,30 @@ const Quiz = () => {
     }
   };
 
-  return (
+  useEffect(() => {
+    const start = () => {
+      setLoading(true);
+    };
+    const end = () => {
+      setLoading(false);
+    };
+
+    Router.events.on("routeChangeStart", start);
+    Router.events.on("routeChangeComplete", end);
+    Router.events.on("routeChangeError", end);
+
+    return () => {
+      Router.events.off("routeChangeStart", start);
+      Router.events.off("routeChangeComplete", end);
+      Router.events.off("routeChangeError", end);
+    };
+  }, []);
+
+  return loading ? (
+    <Spinner />
+  ) : (
     <>
+      <HeadMeta />
       <Header
         onClickHome={handleHomeButtonClick}
         isDone={userAnswer && questions?.results?.length - 1 === currentIndex}
@@ -100,10 +125,10 @@ const Quiz = () => {
                   content={decode(option)}
                   onClick={handleOptionClick}
                   state={getOptionState({
-                    content: option,
+                    content: decode(option),
                     progressIndex,
                     currentIndex,
-                    correctAnswer,
+                    correctAnswer: decode(correctAnswer),
                     userAnswer,
                     userResult
                   })}
@@ -116,6 +141,12 @@ const Quiz = () => {
       )}
     </>
   );
+};
+
+export const getServerSideProps = async () => {
+  return {
+    props: {},
+  };
 };
 
 export default Quiz;

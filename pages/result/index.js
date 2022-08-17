@@ -1,6 +1,9 @@
-import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import Router, { useRouter } from "next/router";
 import { useRecoilValue, useSetRecoilState, useResetRecoilState } from "recoil";
 
+import HeadMeta from "../../components/HeadMeta";
+import Spinner from "../../components/loading/Spinner";
 import LargeButton from "../../components/button/LargeButton";
 import Bar from "../../components/chart/Bar";
 import { userState } from "../../recoil/user";
@@ -12,11 +15,12 @@ const Result = () => {
   const setShouldUpdateQuestion = useSetRecoilState(updateState);
   const resetUserResult = useResetRecoilState(userState);
   const resetProgressIndex = useResetRecoilState(progressState);
+  const [loading, setLoading] = useState(false);
 
   const handleRetryButtonClick = () => {
+    router.push("/");
     resetProgressIndex();
     resetUserResult();
-    router.push("/");
   };
 
   const handleReviewButtonClick = () => {
@@ -29,46 +33,74 @@ const Result = () => {
   };
 
   const handleResetButtonClick = () => {
+    router.push("/");
     setShouldUpdateQuestion(true);
     resetProgressIndex();
     resetUserResult();
-    router.push("/");
   };
 
-  return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <span className="mb-16 text-4xl font-bold text-gray">
-        Time : {userResult.time}&quot;
-      </span>
-      <div className="flex flex-col items-center mb-6">
-        <span className="text-2xl mr-2 font-bold text-correct">correct</span>
-        <Bar
-          percent={`${Object.keys(userResult.correct).length}0%`}
-          labelText={Object.keys(userResult.correct).length}
-          barStyle="bg-correct"
-        />
-      </div>
-      <div className="flex flex-col items-center mb-6">
-        <span className="text-2xl mr-2 font-bold text-wrong">wrong</span>
-        <Bar
-          percent={`${Object.keys(userResult.wrong).length}0%`}
-          labelText={Object.keys(userResult.wrong).length}
-          barStyle="bg-wrong"
-        />
-      </div>
-      <div className="flex flex-col items-center justify-center mt-14">
-        <LargeButton onClick={handleRetryButtonClick}>
-          Try Again
-        </LargeButton>
-        <LargeButton onClick={handleReviewButtonClick}>
-          Review
-        </LargeButton>
-        <LargeButton onClick={handleResetButtonClick}>
-          Reset
-        </LargeButton>
-      </div>
+  useEffect(() => {
+    const start = () => {
+      setLoading(true);
+    };
+    const end = () => {
+      setLoading(false);
+    };
 
-    </div>
+    Router.events.on("routeChangeStart", start);
+    Router.events.on("routeChangeComplete", end);
+    Router.events.on("routeChangeError", end);
+
+    return () => {
+      Router.events.off("routeChangeStart", start);
+      Router.events.off("routeChangeComplete", end);
+      Router.events.off("routeChangeError", end);
+    };
+  }, []);
+
+  return loading ? (
+    <Spinner />
+  ) : (
+    <>
+      <HeadMeta
+        title="Quiz Result"
+        description="Check the result of quiz"
+        url="https://quizquiz.vercel.app/result"
+        image="https://user-images.githubusercontent.com/54696956/185005465-84ae30de-9a39-42c3-aad0-4d8a42ca5247.png"
+      />
+      <div className="flex flex-col items-center justify-center h-screen">
+        <span className="mb-16 text-xl sm:text-4xl font-bold text-gray">
+          Time : {userResult.time}&quot;
+        </span>
+        <div className="flex flex-col items-center mb-6">
+          <span className="text:xl sm:text-2xl mr-2 font-bold text-correct">correct</span>
+          <Bar
+            percent={`${Object.keys(userResult.correct).length}0%`}
+            labelText={Object.keys(userResult.correct).length}
+            barStyle="bg-correct"
+          />
+        </div>
+        <div className="flex flex-col items-center mb-6">
+          <span className="text:xl sm:text-2xl mr-2 font-bold text-wrong">wrong</span>
+          <Bar
+            percent={`${Object.keys(userResult.wrong).length}0%`}
+            labelText={Object.keys(userResult.wrong).length}
+            barStyle="bg-wrong"
+          />
+        </div>
+        <div className="flex flex-col items-center justify-center mt-14">
+          <LargeButton onClick={handleRetryButtonClick}>
+            Try Again
+          </LargeButton>
+          <LargeButton onClick={handleReviewButtonClick}>
+            Review
+          </LargeButton>
+          <LargeButton onClick={handleResetButtonClick}>
+            Reset
+          </LargeButton>
+        </div>
+      </div>
+    </>
   );
 };
 

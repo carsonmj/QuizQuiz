@@ -1,8 +1,10 @@
-import { useState } from "react";
-import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import Router, { useRouter } from "next/router";
 import { useRecoilValue } from "recoil";
 import { decode } from "html-entities";
 
+import HeadMeta from "../../components/HeadMeta";
+import Spinner from "../../components/loading/Spinner";
 import Option from "../../components/quiz/Option";
 import OptionsContainer from "../../components/quiz/OptionsContainer";
 import QuestionController from "../../components/button/QuestionController";
@@ -17,6 +19,7 @@ const Review = () => {
   const userResult = useRecoilValue(userState);
   const wonrgAnswerdQuestions = Object.keys(userResult.wrong);
   const [currentIndex, setCurrenctIndex] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const handlePrevButtonClick = () => {
     setCurrenctIndex(currentIndex - 1);
@@ -50,8 +53,35 @@ const Review = () => {
     return "default";
   };
 
-  return (
+  useEffect(() => {
+    const start = () => {
+      setLoading(true);
+    };
+    const end = () => {
+      setLoading(false);
+    };
+
+    Router.events.on("routeChangeStart", start);
+    Router.events.on("routeChangeComplete", end);
+    Router.events.on("routeChangeError", end);
+
+    return () => {
+      Router.events.off("routeChangeStart", start);
+      Router.events.off("routeChangeComplete", end);
+      Router.events.off("routeChangeError", end);
+    };
+  }, []);
+
+  return loading ? (
+    <Spinner />
+  ) : (
     <>
+      <HeadMeta
+        title="Quiz Review"
+        description="Check the wrong answers"
+        url="https://quizquiz.vercel.app/review"
+        image="https://user-images.githubusercontent.com/54696956/185005686-321bab42-bc32-4f9a-99fb-80d96bb71c45.png"
+      />
       {wonrgAnswerdQuestions.length > 0 && (
         <>
           <ReviewHeader

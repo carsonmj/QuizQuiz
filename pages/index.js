@@ -1,8 +1,11 @@
-import { useRouter } from "next/router";
+import { useState } from "react";
+import Router, { useRouter } from "next/router";
 import { useCallback, useEffect } from "react";
 import { useRecoilState, useRecoilRefresher_UNSTABLE, useResetRecoilState } from "recoil";
 
+import HeadMeta from "../components/HeadMeta";
 import MainButton from "../components/button/MainButton";
+import Spinner from "../components/loading/Spinner";
 import { updateState, questionsState, progressState } from "../recoil/question";
 import { userState } from "../recoil/user";
 
@@ -12,6 +15,7 @@ const Home = ({ descriptions }) => {
   const refreshQuestion = useRecoilRefresher_UNSTABLE(questionsState);
   const resetUserState = useResetRecoilState(userState);
   const resetProgressState = useResetRecoilState(progressState);
+  const [loading, setLoading] = useState(false);
 
   const handleStartButtonClick = useCallback(() => {
     router.push("/quiz");
@@ -21,7 +25,24 @@ const Home = ({ descriptions }) => {
 
   useEffect(() => {
     resetProgressState();
-  });
+
+    const start = () => {
+      setLoading(true);
+    };
+    const end = () => {
+      setLoading(false);
+    };
+
+    Router.events.on("routeChangeStart", start);
+    Router.events.on("routeChangeComplete", end);
+    Router.events.on("routeChangeError", end);
+
+    return () => {
+      Router.events.off("routeChangeStart", start);
+      Router.events.off("routeChangeComplete", end);
+      Router.events.off("routeChangeError", end);
+    };
+  }, []);
 
   useEffect(() => {
     if (shouldUpdateQuestion) {
@@ -29,20 +50,28 @@ const Home = ({ descriptions }) => {
     }
   }, [shouldUpdateQuestion]);
 
-  return (
-    <div className="w-screen h-screen flex flex-col items-center justify-center overflow-hidden bg-white">
-      <h2 className="mb-14 text-7xl text-[#00c896]">QUIZ QUIZ</h2>
-      <MainButton onClick={handleStartButtonClick}>
-        <p className="text-2xl">
-          Start
-        </p>
-      </MainButton>
-      {descriptions?.result?.length > 0 &&
-        <article className="mt-14 bg-[#e7faf6] text-[#666666]">
-          {descriptions.result.map(({ id, item }) => <div key={id}>{item}</div>)}
-        </article>
-      }
-    </div>
+  return loading ? (
+    <Spinner />
+  ) : (
+    <>
+      <HeadMeta />
+      <div className="w-screen h-screen flex flex-col items-center justify-center overflow-hidden bg-white">
+        <h2 className="mb-14 text-4xl sm:text-5xl md:text-7xl text-green">QUIZ QUIZ</h2>
+        <MainButton onClick={handleStartButtonClick}>
+          <p className="text-xl sm:text-md lg:text-2xl">
+            Start
+          </p>
+        </MainButton>
+        {descriptions?.result?.length > 0 &&
+          <article className="mt-14 p-8 rounded-md shadow-lg sm:bg-[#f2faf9] text-[#666666]">
+            <p className="mb-4 text-sm sm:text-xl font-bold">Description</p>
+            {descriptions.result.map(({ id, item }) => {
+              return <div className="mb-1 text-sm" key={id}>◦ {item}</div>
+            })}
+          </article>
+        }
+      </div>
+    </>
   );
 }
 
