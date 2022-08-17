@@ -16,14 +16,14 @@ const Bar = ({ percent, labelText, barStyle }) => {
   }, []);
 
   return (
-    <div className="h-5 w-80 relative max-w-xl rounded-full overflow-hidden">
+    <div className="w-60 h-4 sm:w-80 sm:h-6 relative max-w-xl rounded-full overflow-hidden">
       <div className="w-full h-full bg-lightgray absolute"></div>
       <div
         className="w-0 h-full absolute text-right"
         ref={barRef}
       >
         {labelText !== null && labelText !== undefined && (
-          <p className="w-full p-0.5 pr-2 leading-none text-white font-medium">
+          <p className="w-full p-0.4 pr-2 leading-none text-white text-sm sm:text-lg font-medium">
             {labelText}
           </p>
         )}
