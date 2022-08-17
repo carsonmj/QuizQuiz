@@ -49,10 +49,6 @@ export const getOptionState = ({ content, progressIndex, currentIndex, correctAn
       return userResult.wrong[currentIndex] === content ? "wrong" : "default";
     }
   } else {
-    if (!userAnswer) {
-      return "default";
-    }
-
     if (userAnswer && content === correctAnswer) {
       return "correct";
     }
