@@ -1,21 +1,21 @@
-import { useState } from "react";
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { useCallback, useEffect } from "react";
 import { useRecoilState, useRecoilRefresher_UNSTABLE, useResetRecoilState } from "recoil";
 
 import HeadMeta from "../components/HeadMeta";
 import MainButton from "../components/button/MainButton";
 import Spinner from "../components/loading/Spinner";
+import useRouterEvnet from "../hooks/useRouterEvent";
 import { updateState, questionsState, progressState } from "../recoil/question";
 import { userState } from "../recoil/user";
 
 const Home = ({ descriptions }) => {
   const router = useRouter();
+  const loading = useRouterEvnet();
   const [shouldUpdateQuestion, setShouldUpdateQuestion] = useRecoilState(updateState);
   const refreshQuestion = useRecoilRefresher_UNSTABLE(questionsState);
   const resetUserState = useResetRecoilState(userState);
   const resetProgressState = useResetRecoilState(progressState);
-  const [loading, setLoading] = useState(false);
 
   const handleStartButtonClick = useCallback(() => {
     router.push("/quiz");
@@ -25,23 +25,6 @@ const Home = ({ descriptions }) => {
 
   useEffect(() => {
     resetProgressState();
-
-    const start = () => {
-      setLoading(true);
-    };
-    const end = () => {
-      setLoading(false);
-    };
-
-    Router.events.on("routeChangeStart", start);
-    Router.events.on("routeChangeComplete", end);
-    Router.events.on("routeChangeError", end);
-
-    return () => {
-      Router.events.off("routeChangeStart", start);
-      Router.events.off("routeChangeComplete", end);
-      Router.events.off("routeChangeError", end);
-    };
   }, []);
 
   useEffect(() => {

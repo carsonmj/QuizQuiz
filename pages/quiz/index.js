@@ -1,5 +1,5 @@
-import Router, { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useCallback, useState } from "react";
 import { useRecoilValue, useRecoilState } from "recoil";
 import { decode } from "html-entities";
 
@@ -10,18 +10,19 @@ import Option from "../../components/quiz/Option";
 import OptionsContainer from "../../components/quiz/OptionsContainer";
 import QuestionController from "../../components/button/QuestionController";
 import QuestionContainer from "../../components/quiz/QuestionContainer";
+import useRouterEvnet from "../../hooks/useRouterEvent";
 import { questionsState, progressState } from "../../recoil/question";
 import { userState } from "../../recoil/user";
 import { getOptionState } from "../../utils/helper";
 
 const Quiz = () => {
   const router = useRouter();
+  const loading = useRouterEvnet();
   const questions = useRecoilValue(questionsState);
   const [progressIndex, setProgressIndex] = useRecoilState(progressState);
   const [userResult, setUserResult] = useRecoilState(userState);
   const [currentIndex, setCurrenctIndex] = useState(0);
   const [userAnswer, setUserAnswer] = useState("");
-  const [loading, setLoading] = useState(false);
   const correctAnswer = questions.results[currentIndex].correct_answer;
 
   const init = () => {
@@ -75,25 +76,6 @@ const Quiz = () => {
       });
     }
   };
-
-  useEffect(() => {
-    const start = () => {
-      setLoading(true);
-    };
-    const end = () => {
-      setLoading(false);
-    };
-
-    Router.events.on("routeChangeStart", start);
-    Router.events.on("routeChangeComplete", end);
-    Router.events.on("routeChangeError", end);
-
-    return () => {
-      Router.events.off("routeChangeStart", start);
-      Router.events.off("routeChangeComplete", end);
-      Router.events.off("routeChangeError", end);
-    };
-  }, []);
 
   return loading ? (
     <Spinner />

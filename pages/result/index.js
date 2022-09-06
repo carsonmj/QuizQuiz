@@ -1,21 +1,21 @@
-import { useEffect, useState } from "react";
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { useRecoilValue, useSetRecoilState, useResetRecoilState } from "recoil";
 
 import HeadMeta from "../../components/HeadMeta";
 import Spinner from "../../components/loading/Spinner";
 import LargeButton from "../../components/button/LargeButton";
 import Bar from "../../components/chart/Bar";
+import useRouterEvnet from "../../hooks/useRouterEvent";
 import { userState } from "../../recoil/user";
 import { progressState, updateState } from "../../recoil/question";
 
 const Result = () => {
   const router = useRouter();
+  const loading = useRouterEvnet();
   const userResult = useRecoilValue(userState);
   const setShouldUpdateQuestion = useSetRecoilState(updateState);
   const resetUserResult = useResetRecoilState(userState);
   const resetProgressIndex = useResetRecoilState(progressState);
-  const [loading, setLoading] = useState(false);
 
   const handleRetryButtonClick = () => {
     router.push("/");
@@ -38,25 +38,6 @@ const Result = () => {
     resetProgressIndex();
     resetUserResult();
   };
-
-  useEffect(() => {
-    const start = () => {
-      setLoading(true);
-    };
-    const end = () => {
-      setLoading(false);
-    };
-
-    Router.events.on("routeChangeStart", start);
-    Router.events.on("routeChangeComplete", end);
-    Router.events.on("routeChangeError", end);
-
-    return () => {
-      Router.events.off("routeChangeStart", start);
-      Router.events.off("routeChangeComplete", end);
-      Router.events.off("routeChangeError", end);
-    };
-  }, []);
 
   return loading ? (
     <Spinner />

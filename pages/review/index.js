@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import Router, { useRouter } from "next/router";
+import { useState } from "react";
+import { useRouter } from "next/router";
 import { useRecoilValue } from "recoil";
 import { decode } from "html-entities";
 
@@ -10,16 +10,17 @@ import OptionsContainer from "../../components/quiz/OptionsContainer";
 import QuestionController from "../../components/button/QuestionController";
 import QuestionContainer from "../../components/quiz/QuestionContainer";
 import ReviewHeader from "../../components/header/ReviewHeader";
+import useRouterEvnet from "../../hooks/useRouterEvent";
 import { userState } from "../../recoil/user";
 import { questionsState } from "../../recoil/question";
 
 const Review = () => {
   const router = useRouter();
+  const loading = useRouterEvnet();
   const questions = useRecoilValue(questionsState).results;
   const userResult = useRecoilValue(userState);
   const wonrgAnswerdQuestions = Object.keys(userResult.wrong);
   const [currentIndex, setCurrenctIndex] = useState(0);
-  const [loading, setLoading] = useState(false);
 
   const handlePrevButtonClick = () => {
     setCurrenctIndex(currentIndex - 1);
@@ -52,25 +53,6 @@ const Review = () => {
 
     return "default";
   };
-
-  useEffect(() => {
-    const start = () => {
-      setLoading(true);
-    };
-    const end = () => {
-      setLoading(false);
-    };
-
-    Router.events.on("routeChangeStart", start);
-    Router.events.on("routeChangeComplete", end);
-    Router.events.on("routeChangeError", end);
-
-    return () => {
-      Router.events.off("routeChangeStart", start);
-      Router.events.off("routeChangeComplete", end);
-      Router.events.off("routeChangeError", end);
-    };
-  }, []);
 
   return loading ? (
     <Spinner />
