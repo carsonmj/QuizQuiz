@@ -1,12 +1,15 @@
 import { RecoilRoot } from "recoil";
 
+import ErrorBoundary from "../components/error";
 import "../styles/globals.css";
 
 const MyApp = ({ Component, pageProps }) => {
   return (
-    <RecoilRoot>
-      <Component {...pageProps} />
-    </RecoilRoot>
+    <ErrorBoundary>
+      <RecoilRoot>
+        <Component {...pageProps} />
+      </RecoilRoot>
+    </ErrorBoundary>
   );
 };
 

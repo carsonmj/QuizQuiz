@@ -36,8 +36,7 @@ export const questionsState = selector({
         results: reOrganizeQuestions(questions.results),
       };
     } catch (error) {
-      console.error(error);
-      return { code: 500, results: [] };
+      throw new Error("Quiz API server is not avaliable.");
     }
   },
 });
